@@ -34,6 +34,10 @@
     "through2": "^4.0.2",
     "uglify-js": "^3.11.5"
   },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
   "homepage": "https://github.com/craftzdog/react-native-buffer",
   "jspm": {
     "map": {
