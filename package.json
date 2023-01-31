@@ -13,7 +13,8 @@
   "contributors": [
     "Romain Beauxis <toots@rastageeks.org>",
     "James Halliday <mail@substack.net>",
-    "Takuya Matsuyama <hi@craftz.dog>"
+    "Takuya Matsuyama <hi@craftz.dog>",
+    "Vicary Archangel <vicary.archangel@member.mensa.org>"
   ],
   "dependencies": {
     "ieee754": "^1.2.1",
