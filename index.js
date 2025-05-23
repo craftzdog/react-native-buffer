@@ -2089,11 +2089,15 @@ function base64ToBytes (str) {
 }
 
 function base64UrlToBytes (str) {
-  return base64.toByteArray(base64ToBase64Url(base64clean(str)))
+  return base64.toByteArray(base64clean(base64UrlToBase64(str)))
 }
 
 function base64ToBase64Url (str) {
-  return base64clean(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+function base64UrlToBase64 (str) {
+  return str.replace(/-/g, '+').replace(/_/g, '/').padEnd(str.length + (4 - str.length % 4) % 4, '=')
 }
 
 function blitBuffer (src, dst, offset, length) {
