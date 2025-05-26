@@ -83,7 +83,7 @@ test('base64url: JWT-like payload', function (t) {
     t.end()
 })
 
-test('base64url: it should accept base64 and base64url while constructing buffer with', function (t) {
+test('base64url: it should accept base64 and base64url while constructing buffer with base64url', function (t) {
   const buf = new B("aGVsbG93b3JsZD0=", 'base64url')
   const buf2 = new B("aGVsbG93b3JsZD0=", 'base64')
   t.equal(buf.toString('utf8'), buf2.toString('utf8'))
