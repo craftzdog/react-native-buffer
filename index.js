@@ -402,6 +402,7 @@ Buffer.isEncoding = function isEncoding (encoding) {
     case 'latin1':
     case 'binary':
     case 'base64':
+    case 'base64url':
     case 'ucs2':
     case 'ucs-2':
     case 'utf16le':
@@ -485,6 +486,8 @@ function byteLength (string, encoding) {
         return len >>> 1
       case 'base64':
         return base64ToBytes(string).length
+      case 'base64url':
+        return base64UrlToBytes(string).length
       default:
         if (loweredCase) {
           return mustMatch ? -1 : utf8ToBytes(string).length // assume utf8
@@ -551,6 +554,9 @@ function slowToString (encoding, start, end) {
 
       case 'base64':
         return base64Slice(this, start, end)
+
+      case 'base64url':
+        return base64UrlSlice(this, start, end)
 
       case 'ucs2':
       case 'ucs-2':
@@ -880,6 +886,10 @@ function base64Write (buf, string, offset, length) {
   return blitBuffer(base64ToBytes(string), buf, offset, length)
 }
 
+function base64UrlWrite (buf, string, offset, length) {
+  return blitBuffer(base64UrlToBytes(string), buf, offset, length)
+}
+
 function ucs2Write (buf, string, offset, length) {
   return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
 }
@@ -939,6 +949,9 @@ Buffer.prototype.write = function write (string, offset, length, encoding) {
         // Warning: maxLength not taken into account in base64Write
         return base64Write(this, string, offset, length)
 
+      case 'base64url':
+        return base64UrlWrite(this, string, offset, length)
+
       case 'ucs2':
       case 'ucs-2':
       case 'utf16le':
@@ -965,6 +978,14 @@ function base64Slice (buf, start, end) {
     return base64.fromByteArray(buf)
   } else {
     return base64.fromByteArray(buf.slice(start, end))
+  }
+}
+
+function base64UrlSlice (buf, start, end) {
+  if (start === 0 && end === buf.length) {
+    return base64ToBase64Url(base64.fromByteArray(buf))
+  } else {
+    return base64ToBase64Url(base64.fromByteArray(buf.slice(start, end)))
   }
 }
 
@@ -2078,6 +2099,18 @@ function utf16leToBytes (str, units) {
 
 function base64ToBytes (str) {
   return base64.toByteArray(base64clean(str))
+}
+
+function base64UrlToBytes (str) {
+  return base64.toByteArray(base64clean(base64UrlToBase64(str)))
+}
+
+function base64ToBase64Url (str) {
+  return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+function base64UrlToBase64 (str) {
+  return str.replace(/-/g, '+').replace(/_/g, '/').padEnd(str.length + (4 - str.length % 4) % 4, '=')
 }
 
 function blitBuffer (src, dst, offset, length) {
